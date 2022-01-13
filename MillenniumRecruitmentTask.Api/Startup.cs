@@ -7,6 +7,8 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
+using MillenniumRecruitmentTask.Api.Data;
+using MillenniumRecruitmentTask.Api.Data.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -32,6 +34,9 @@ namespace MillenniumRecruitmentTask.Api
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "MillenniumRecruitmentTask.Api", Version = "v1" });
             });
+
+            services.AddSingleton<IStore, Store>();
+            services.AddScoped<IUserRepository, UserRepository>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
