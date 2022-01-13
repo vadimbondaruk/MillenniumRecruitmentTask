@@ -2,7 +2,6 @@
 using Microsoft.Extensions.Logging;
 using MillenniumRecruitmentTask.Api.Data.Entities;
 using MillenniumRecruitmentTask.Api.Data.Interfaces;
-using Swashbuckle.AspNetCore.Annotations;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
@@ -45,7 +44,9 @@ namespace MillenniumRecruitmentTask.Api.Controllers
             }
             var users = await _userRepository.GetAllAsync(cancellationToken);
 
-            var maxId = users.ToList().Select(x => x.Id).Max();
+            users = users.ToList();
+
+            var maxId = users.Any() ? users.Select(x => x.Id).Max() : 0;
 
             await _userRepository.CreateAsync(new Data.Entities.User {Id = ++maxId, Name = name }, cancellationToken);
 
@@ -60,7 +61,6 @@ namespace MillenniumRecruitmentTask.Api.Controllers
             if (string.IsNullOrEmpty(user.Name))
             {
                 return BadRequest("name can not be empty");
-
             }
 
             var existedUser = await _userRepository.FindByIdAsync(user.Id, cancellationToken);
