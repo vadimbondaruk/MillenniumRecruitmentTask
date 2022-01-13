@@ -54,7 +54,7 @@ namespace MillenniumRecruitmentTask.Api.Data
             return Task.CompletedTask;
         }
 
-        public Task UpdateAsumc(User item, CancellationToken cancellationToken)
+        public Task UpdateAsync(User item, CancellationToken cancellationToken)
         {
             var user = _store.Users.FirstOrDefault(x => x.Id == item.Id);
             if (user != null)

@@ -18,6 +18,6 @@ namespace MillenniumRecruitmentTask.Api.Data.Interfaces
 
         Task RemoveAsync(TEntity item, CancellationToken cancellationToken);
 
-        Task UpdateAsumc(TEntity item, CancellationToken cancellationToken);
+        Task UpdateAsync(TEntity item, CancellationToken cancellationToken);
     }
 }
