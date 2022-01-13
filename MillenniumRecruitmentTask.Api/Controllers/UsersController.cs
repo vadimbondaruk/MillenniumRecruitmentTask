@@ -2,6 +2,7 @@
 using Microsoft.Extensions.Logging;
 using MillenniumRecruitmentTask.Api.Data.Entities;
 using MillenniumRecruitmentTask.Api.Data.Interfaces;
+using Swashbuckle.AspNetCore.Annotations;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
@@ -36,27 +37,57 @@ namespace MillenniumRecruitmentTask.Api.Controllers
         }
 
         [HttpPost]
-        public async Task CreateAsync(string name, CancellationToken cancellationToken)
+        public async Task<IActionResult> CreateAsync(string name, CancellationToken cancellationToken)
         {
+            if (string.IsNullOrEmpty(name))
+            {
+                return BadRequest("name can not be empty");
+            }
             var users = await _userRepository.GetAllAsync(cancellationToken);
 
             var maxId = users.ToList().Select(x => x.Id).Max();
 
             await _userRepository.CreateAsync(new Data.Entities.User {Id = ++maxId, Name = name }, cancellationToken);
+
+            return Ok();
         }
 
         // TODO: replace user by view model 
 
         [HttpPut]
-        public async Task UpdateAsync(User user, CancellationToken cancellationToken)
+        public async Task<IActionResult> UpdateAsync(User user, CancellationToken cancellationToken)
         {
+            if (string.IsNullOrEmpty(user.Name))
+            {
+                return BadRequest("name can not be empty");
+
+            }
+
+            var existedUser = await _userRepository.FindByIdAsync(user.Id, cancellationToken);
+
+            if(existedUser == null)
+            {
+                return NotFound(user);
+            }
+
             await _userRepository.UpdateAsync(user, cancellationToken);
+
+            return Ok();
         }
 
         [HttpDelete]
-        public async Task DeleteAsync(int id, CancellationToken cancellationToken)
+        public async Task<IActionResult> DeleteAsync(int id, CancellationToken cancellationToken)
         {
+            var existedUser = await _userRepository.FindByIdAsync(id, cancellationToken);
+
+            if (existedUser == null)
+            {
+                return NotFound(id);
+            }
+
             await _userRepository.RemoveAsync(new Data.Entities.User { Id = id }, cancellationToken);
+
+            return Ok();
         }
     }
 }
